@@ -95,6 +95,83 @@ export const ads = [
   },
 ]
 
+// Handwritten example analysis keyed by ad ID, not AI output.
+// Message Angle uses the corresponding ad's angle field.
+export const adAnalysis = {
+  1: {
+    targetAudience: 'Adult learners who hesitate to speak English in everyday situations.',
+    hook: 'Find your voice frames learning as personal confidence.',
+    painPoint: 'Fear of mistakes and lessons that do not fit individual goals.',
+    keyBenefit: 'Personal support from a tutor who understands the learner.',
+    offer: 'Personalized English tutoring; no discount stated.',
+    cta: 'Find a tutor (suggested example CTA).',
+    funnelStage: 'Consideration — introduces a tailored learning approach.',
+  },
+  2: {
+    targetAudience: 'Busy learners looking for short, flexible speaking practice.',
+    hook: 'A little practice promises progress without a large time commitment.',
+    painPoint: 'Limited time and few opportunities to practice conversations.',
+    keyBenefit: 'An AI tutor available whenever the learner has a few minutes.',
+    offer: 'On-demand AI conversation practice; no trial stated.',
+    cta: 'Start practicing (suggested example CTA).',
+    funnelStage: 'Awareness — introduces an accessible practice habit.',
+  },
+  3: {
+    targetAudience: 'Professionals who use English in meetings and team discussions.',
+    hook: 'Make your next meeting count connects learning to an immediate work need.',
+    painPoint: 'Difficulty expressing ideas clearly in workplace conversations.',
+    keyBenefit: 'Practical English for sharing ideas and leading meetings.',
+    offer: 'Workplace English learning; no promotional offer stated.',
+    cta: 'Explore business English (suggested example CTA).',
+    funnelStage: 'Consideration — links lessons to professional outcomes.',
+  },
+  4: {
+    targetAudience: 'New learners curious about online conversation tutoring.',
+    hook: 'Your first conversation makes the starting point feel approachable.',
+    painPoint: 'Uncertainty about getting started and finding a friendly tutor.',
+    keyBenefit: 'A welcoming introduction to everyday English practice.',
+    offer: 'Trial positioning; pricing and duration are unspecified in this creative.',
+    cta: 'Try a conversation (suggested example CTA).',
+    funnelStage: 'Conversion — encourages a first tutoring experience.',
+  },
+  5: {
+    targetAudience: 'Mobile learners with short breaks in their daily routine.',
+    hook: 'A coffee break becomes a practical opportunity to learn.',
+    painPoint: 'Difficulty finding study time and knowing how to improve pronunciation.',
+    keyBenefit: 'Five-minute practice sessions with instant pronunciation feedback.',
+    offer: 'AI-guided speaking practice; no discount stated.',
+    cta: 'Practice for five minutes (suggested example CTA).',
+    funnelStage: 'Consideration — demonstrates how the product fits a daily routine.',
+  },
+  6: {
+    targetAudience: 'Learners comparing tutors before committing to lessons.',
+    hook: 'Meet your next tutor makes the search feel personal and straightforward.',
+    painPoint: 'Uncertainty about tutor fit and lesson scheduling.',
+    keyBenefit: 'A learning plan suited to the learner’s schedule.',
+    offer: 'A free trial; duration and eligibility are not specified.',
+    cta: 'Start a free trial (suggested example CTA).',
+    funnelStage: 'Conversion — reduces the barrier to trying a tutor.',
+  },
+  7: {
+    targetAudience: 'Learners who know English but overthink before speaking.',
+    hook: 'Less overthinking. More speaking. names a familiar frustration.',
+    painPoint: 'Anxiety about speaking spontaneously in everyday conversations.',
+    keyBenefit: 'Friendly practice with relatable topics such as travel and small talk.',
+    offer: 'Conversation practice with a partner; no promotion stated.',
+    cta: 'Find a conversation partner (suggested example CTA).',
+    funnelStage: 'Awareness — connects with an emotional speaking barrier.',
+  },
+  8: {
+    targetAudience: 'Professionals and job seekers preparing for high-stakes conversations.',
+    hook: 'Pitch your ideas with clarity emphasizes a specific career skill.',
+    painPoint: 'Difficulty presenting ideas or answering interview questions in English.',
+    keyBenefit: 'Teacher-led preparation for presentations and job interviews.',
+    offer: 'Practical English lessons; no promotional pricing stated.',
+    cta: 'Explore lessons (suggested example CTA).',
+    funnelStage: 'Consideration — presents lessons as preparation for career moments.',
+  },
+}
+
 export const competitors = [
   { id: 1, name: 'AmazingTalker', category: 'Online tutoring', adCount: 48, activity: '3 new ads this week' },
   { id: 2, name: 'Speak', category: 'AI language learning', adCount: 36, activity: '5 new ads this week' },

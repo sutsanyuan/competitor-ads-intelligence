@@ -1,4 +1,5 @@
 import { Bookmark } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 function AdCard({ ad, onToggleSave }) {
   return (
@@ -18,10 +19,14 @@ function AdCard({ ad, onToggleSave }) {
           <Bookmark aria-hidden="true" className={`size-4 ${ad.saved ? 'fill-current' : ''}`} />
         </button>
       </div>
-      <img src={ad.image} alt={`${ad.angle} sample creative for ${ad.competitor}`} width="640" height="400" className="aspect-[8/5] w-full object-cover" />
+      <Link to={`/ads/${ad.id}`} aria-label={`View ad: ${ad.headline}`} className="block focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-indigo-600">
+        <img src={ad.image} alt={`${ad.angle} sample creative for ${ad.competitor}`} width="640" height="400" className="aspect-[8/5] w-full object-cover" />
+      </Link>
       <div className="flex flex-1 flex-col items-start p-4">
         <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600">{ad.angle}</span>
-        <h3 className="mt-3 text-base font-semibold leading-6">{ad.headline}</h3>
+        <h3 className="mt-3 text-base font-semibold leading-6">
+          <Link to={`/ads/${ad.id}`} className="rounded-sm hover:text-indigo-700 hover:underline focus-visible:outline-2 focus-visible:outline-indigo-600">{ad.headline}</Link>
+        </h3>
         <p className="mt-2 text-sm leading-6 text-slate-500">{ad.copy}</p>
         <p className="mt-auto pt-5 text-xs text-slate-500">{ad.date}</p>
       </div>
