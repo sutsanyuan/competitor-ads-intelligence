@@ -1,9 +1,12 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import AdCard from '../components/dashboard/AdCard'
 import { ads } from '../data/mockAds'
 
 function AdsExplorer() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const competitorFilter = searchParams.get('competitor') || ''
   const [explorerAds, setExplorerAds] = useState(ads)
   const [searchQuery, setSearchQuery] = useState('')
   const [platformFilter, setPlatformFilter] = useState('All')
@@ -17,17 +20,21 @@ function AdsExplorer() {
     const matchesPlatform = platformFilter === 'All' || ad.platform === platformFilter
     const matchesAngle = angleFilter === 'All' || ad.angle === angleFilter
     const matchesSaved = savedFilter === 'All' || ad.saved
+    const matchesCompetitor = competitorFilter === '' || ad.competitor === competitorFilter
 
-    return matchesSearch && matchesPlatform && matchesAngle && matchesSaved
+    return matchesSearch && matchesPlatform && matchesAngle && matchesSaved && matchesCompetitor
   })
   const hasActiveFilters = searchQuery !== '' || platformFilter !== 'All'
-    || angleFilter !== 'All' || savedFilter !== 'All'
+    || angleFilter !== 'All' || savedFilter !== 'All' || competitorFilter !== ''
 
   function clearFilters() {
     setSearchQuery('')
     setPlatformFilter('All')
     setAngleFilter('All')
     setSavedFilter('All')
+    const nextParams = new URLSearchParams(searchParams)
+    nextParams.delete('competitor')
+    setSearchParams(nextParams)
   }
 
   function toggleSave(id) {
@@ -46,6 +53,9 @@ function AdsExplorer() {
       </div>
 
       <section aria-label="Search and filter ads" className="space-y-4 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+        {competitorFilter && (
+          <p className="text-sm text-slate-600">Showing ads for <span className="font-semibold text-slate-900">{competitorFilter}</span>. Use Clear filters to browse all competitors.</p>
+        )}
         <label className="flex items-center gap-3 rounded-lg border border-slate-200 px-3 py-3 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100">
           <Search aria-hidden="true" className="size-5 shrink-0 text-slate-400" />
           <span className="sr-only">Search ads, competitors, or keywords</span>
