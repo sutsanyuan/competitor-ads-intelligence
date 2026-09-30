@@ -3,7 +3,7 @@ import aiImage from '../assets/ads/ai.svg'
 import businessImage from '../assets/ads/business.svg'
 import trialImage from '../assets/ads/trial.svg'
 
-// Fictional sample activity for this portfolio dashboard.
+// Fictional sample activity, ordered newest first, shared by both pages.
 export const ads = [
   {
     id: 1,
@@ -19,7 +19,7 @@ export const ads = [
   {
     id: 2,
     competitor: 'Speak',
-    platform: 'Instagram',
+    platform: 'Meta',
     image: aiImage,
     headline: 'A little practice. A lot more confidence.',
     copy: 'Practice real conversations with an AI tutor, whenever you have a few minutes.',
@@ -30,7 +30,7 @@ export const ads = [
   {
     id: 3,
     competitor: 'EF English Live',
-    platform: 'LinkedIn',
+    platform: 'Google',
     image: businessImage,
     headline: 'Make your next meeting count',
     copy: 'Learn the English you need to share ideas, lead meetings, and connect at work.',
@@ -48,6 +48,50 @@ export const ads = [
     angle: 'Free Trial',
     date: 'Sep 25, 2026',
     saved: false,
+  },
+  {
+    id: 5,
+    competitor: 'Speak',
+    platform: 'TikTok',
+    image: aiImage,
+    headline: 'Turn your coffee break into conversation',
+    copy: 'Spend five minutes practicing English with instant AI feedback on your pronunciation.',
+    angle: 'AI English',
+    date: 'Sep 24, 2026',
+    saved: true,
+  },
+  {
+    id: 6,
+    competitor: 'AmazingTalker',
+    platform: 'Google',
+    image: trialImage,
+    headline: 'Meet your next English tutor',
+    copy: 'Start with a free trial and find a learning plan that fits your schedule.',
+    angle: 'Free Trial',
+    date: 'Sep 23, 2026',
+    saved: false,
+  },
+  {
+    id: 7,
+    competitor: 'Cambly',
+    platform: 'TikTok',
+    image: speakingImage,
+    headline: 'Less overthinking. More speaking.',
+    copy: 'From travel stories to everyday small talk, practice with a friendly conversation partner.',
+    angle: 'Speaking Confidence',
+    date: 'Sep 22, 2026',
+    saved: false,
+  },
+  {
+    id: 8,
+    competitor: 'EF English Live',
+    platform: 'Meta',
+    image: businessImage,
+    headline: 'Pitch your ideas with clarity',
+    copy: 'Prepare for presentations and job interviews with practical, teacher-led English lessons.',
+    angle: 'Business English',
+    date: 'Sep 21, 2026',
+    saved: true,
   },
 ]
 

@@ -6,10 +6,10 @@ import TrendItem from '../components/dashboard/TrendItem'
 import { ads, competitors, dashboardStats, trendingAngles } from '../data/mockAds'
 
 function Dashboard() {
-  const [recentAds, setRecentAds] = useState(ads)
+  const [recentAds, setRecentAds] = useState(ads.slice(0, 4))
   // The library includes older saved ads outside these four recent ads.
   const savedCountChange = recentAds.filter((ad) => ad.saved).length
-    - ads.filter((ad) => ad.saved).length
+    - ads.slice(0, 4).filter((ad) => ad.saved).length
 
   function toggleSave(id) {
     setRecentAds((currentAds) => currentAds.map((ad) => (
