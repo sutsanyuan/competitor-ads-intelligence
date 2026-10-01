@@ -5,7 +5,7 @@ function TrendItem({ trend }) {
         <h3 className="font-medium">{trend.name}</h3>
         <p className="tabular-nums">
           <span className="font-semibold">{trend.percentage}%</span>
-          <span className="ml-2 text-xs text-emerald-700">+{trend.change} pp</span>
+          {trend.change != null && <span className="ml-2 text-xs text-emerald-700">+{trend.change} pp</span>}
         </p>
       </div>
       <div

@@ -1,5 +1,5 @@
 import CompetitorCard from '../components/competitors/CompetitorCard'
-import { ads } from '../data/ads'
+import useAds from '../hooks/useAds'
 
 // Count each label, then keep every label tied for the highest count.
 function getMostCommon(values) {
@@ -12,6 +12,10 @@ function getMostCommon(values) {
 }
 
 function Competitors() {
+  const { ads, loading, error } = useAds()
+  if (loading) return <p role="status" className="text-sm text-slate-500">Loading competitors...</p>
+  if (error) return <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</p>
+
   const competitorNames = [...new Set(ads.map((ad) => ad.competitor))]
   const competitorSummaries = competitorNames.map((name) => {
     const competitorAds = ads.filter((ad) => ad.competitor === name)
@@ -52,7 +56,7 @@ function Competitors() {
             </div>
           ))}
         </dl>
-        <p className="mt-3 text-xs leading-5 text-slate-500">Based on the local ad library. All tied platforms or angles are shown.</p>
+        <p className="mt-3 text-xs leading-5 text-slate-500">Based on the Supabase ad library. All tied platforms or angles are shown.</p>
       </section>
 
       <section aria-labelledby="tracked-heading">
