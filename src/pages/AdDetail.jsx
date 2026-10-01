@@ -5,6 +5,97 @@ import { Bookmark } from 'lucide-react'
 import { adAnalysis } from '../data/mockAds'
 import { ads as localAds } from '../data/ads'
 import { supabase } from '../lib/supabase'
+import useSession from '../hooks/useSession'
+
+function AddToCollection({ adId }) {
+  const { session, loading: sessionLoading } = useSession()
+  const [collections, setCollections] = useState([])
+  const [collectionsLoading, setCollectionsLoading] = useState(true)
+  const [collectionsError, setCollectionsError] = useState('')
+  const [selectedCollectionId, setSelectedCollectionId] = useState('')
+  const [adding, setAdding] = useState(false)
+  const [addMessage, setAddMessage] = useState('')
+  const [addError, setAddError] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+    async function loadCollections() {
+      try {
+        const { data, error } = await supabase.from('collections').select('*').order('created_at')
+        if (error) throw error
+        if (!cancelled) setCollections(data || [])
+      } catch {
+        if (!cancelled) setCollectionsError('Unable to load collections. Please refresh to try again.')
+      } finally {
+        if (!cancelled) setCollectionsLoading(false)
+      }
+    }
+    loadCollections()
+    return () => { cancelled = true }
+  }, [])
+
+  async function handleAdd(event) {
+    event.preventDefault()
+    if (adding) return
+    setAddMessage('')
+    setAddError('')
+    if (!session) {
+      setAddError('Log in to add this ad to a collection.')
+      return
+    }
+    if (!selectedCollectionId) {
+      setAddError('Please select a collection.')
+      return
+    }
+    setAdding(true)
+    try {
+      const { error } = await supabase.from('collection_ads').insert({
+        collection_id: selectedCollectionId,
+        ad_id: adId,
+      })
+      if (error) {
+        if (error.code === '23505') {
+          setAddMessage('This ad is already in that collection.')
+          return
+        }
+        throw error
+      }
+      setAddMessage('Added to collection')
+    } catch (error) {
+      setAddError(error.message || 'Unable to add this ad. Please try again.')
+    } finally {
+      setAdding(false)
+    }
+  }
+
+  return (
+    <section aria-labelledby="add-collection-heading" className="border-t border-slate-200 pt-5">
+      <h2 id="add-collection-heading" className="text-sm font-semibold">Add to Collection</h2>
+      {sessionLoading ? <p role="status" className="mt-2 text-sm text-slate-500">Checking session...</p> : !session ? (
+        <p className="mt-2 text-sm text-slate-500"><Link to="/login" className="rounded text-indigo-700 underline focus-visible:outline-2">Log in</Link> to add this ad to a collection.</p>
+      ) : collectionsLoading ? <p role="status" className="mt-2 text-sm text-slate-500">Loading collections...</p> : collectionsError ? (
+        <p role="alert" className="mt-2 text-sm text-red-700">{collectionsError}</p>
+      ) : collections.length === 0 ? (
+        <p className="mt-2 text-sm text-slate-500">No collections available yet.</p>
+      ) : (
+        <form onSubmit={handleAdd} className="mt-3 space-y-3">
+          <div className="flex flex-wrap gap-2">
+            <label className="min-w-0 flex-1">
+              <span className="sr-only">Select collection</span>
+              <select value={selectedCollectionId} disabled={adding} onChange={(event) => { setSelectedCollectionId(event.target.value); setAddMessage(''); setAddError('') }} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-indigo-600">
+                <option value="">Select collection</option>
+                {collections.map((collection) => <option key={collection.id} value={collection.id}>{collection.name}</option>)}
+              </select>
+            </label>
+            <button type="submit" disabled={adding || !selectedCollectionId} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50">{adding ? 'Adding...' : 'Add'}</button>
+          </div>
+          {addMessage && <p role="status" className="text-sm text-emerald-700">{addMessage}</p>}
+          {addError && <p role="alert" className="text-sm text-red-700">{addError}</p>}
+        </form>
+      )}
+    </section>
+  )
+}
 
 function AdDetail() {
   const { id } = useParams()
@@ -111,6 +202,7 @@ function AdDetail() {
               <a href={ad.sourceUrl} target="_blank" rel="noreferrer" className="inline-block rounded text-sm font-medium text-indigo-700 hover:underline focus-visible:outline-2 focus-visible:outline-indigo-600">View original ad</a>
             )}
             <p className="text-xs leading-5 text-slate-500">Saves are local to this page and reset when you leave.</p>
+            <AddToCollection key={ad.id} adId={ad.id} />
           </div>
         </article>
 
