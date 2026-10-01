@@ -9,7 +9,7 @@ function AdCard({ ad, onToggleSave }) {
           <p className="text-sm font-semibold">{ad.competitor}</p>
           <p className="mt-1 text-xs text-slate-500">{ad.platform}</p>
         </div>
-        <button
+        {onToggleSave && <button
           type="button"
           onClick={() => onToggleSave(ad.id)}
           aria-pressed={ad.saved}
@@ -17,7 +17,7 @@ function AdCard({ ad, onToggleSave }) {
           className={`flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${ad.saved ? 'bg-indigo-50 text-indigo-700' : 'text-slate-500 hover:bg-slate-100'}`}
         >
           <Bookmark aria-hidden="true" className={`size-4 ${ad.saved ? 'fill-current' : ''}`} />
-        </button>
+        </button>}
       </div>
       <Link to={`/ads/${ad.id}`} aria-label={`View ad: ${ad.headline}`} className="block focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-indigo-600">
         <img src={ad.image} alt={`${ad.angle} sample creative for ${ad.competitor}`} width="640" height="400" className="aspect-[8/5] w-full object-cover" />
