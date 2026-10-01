@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import CollectionCard from '../components/collections/CollectionCard'
 import AdCard from '../components/dashboard/AdCard'
-import { ads } from '../data/mockAds'
+import { ads } from '../data/ads'
 import { collections } from '../data/mockCollections'
 
 function Collections() {

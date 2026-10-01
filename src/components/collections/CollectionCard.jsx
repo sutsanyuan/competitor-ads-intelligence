@@ -1,3 +1,4 @@
+import placeholderImage from '../../assets/ads/placeholder.svg'
 function CollectionCard({ collection, collectionAds, isSelected, onSelect }) {
   return (
     <article className={`flex min-w-0 flex-col rounded-xl border bg-white p-5 ${isSelected ? 'border-indigo-400 ring-1 ring-indigo-100' : 'border-slate-200'}`}>
@@ -8,7 +9,7 @@ function CollectionCard({ collection, collectionAds, isSelected, onSelect }) {
       <p className="mt-2 text-sm leading-6 text-slate-500">{collection.description}</p>
       <div className="my-5 grid grid-cols-3 gap-2">
         {collectionAds.slice(0, 3).map((ad) => (
-          <img key={ad.id} src={ad.image} alt={`${ad.competitor}: ${ad.headline}`} width="640" height="400" className="aspect-[8/5] w-full rounded-md border border-slate-100 object-cover" />
+          <img key={ad.id} src={ad.image || placeholderImage} alt={`${ad.competitor}: ${ad.headline}`} width="640" height="400" className="aspect-[8/5] w-full rounded-md border border-slate-100 object-cover" />
         ))}
         {collectionAds.length === 0 && <p className="col-span-3 text-sm text-slate-500">No ads in this collection yet.</p>}
       </div>

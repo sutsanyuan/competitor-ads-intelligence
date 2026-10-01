@@ -1,9 +1,9 @@
 import CompetitorCard from '../components/competitors/CompetitorCard'
-import { ads } from '../data/mockAds'
+import { ads } from '../data/ads'
 
 // Count each label, then keep every label tied for the highest count.
 function getMostCommon(values) {
-  const counts = values.reduce((result, value) => {
+  const counts = values.filter(Boolean).reduce((result, value) => {
     result[value] = (result[value] || 0) + 1
     return result
   }, {})
@@ -18,14 +18,14 @@ function Competitors() {
     const platforms = [...new Set(competitorAds.map((ad) => ad.platform))]
     // Compare dates rather than relying on the order of the ads array.
     const latestAd = competitorAds.reduce((latest, ad) => (
-      new Date(ad.date) > new Date(latest.date) ? ad : latest
+      (Date.parse(ad.date) || 0) > (Date.parse(latest.date) || 0) ? ad : latest
     ))
 
     return {
       name,
       adCount: competitorAds.length,
       platforms,
-      latestDate: latestAd.date,
+      latestDate: latestAd.date || 'Date unavailable',
       topAngles: getMostCommon(competitorAds.map((ad) => ad.angle)),
     }
   })
@@ -33,7 +33,7 @@ function Competitors() {
     { label: 'Total Competitors', value: competitorSummaries.length },
     { label: 'Total Ads', value: ads.length },
     { label: 'Most Active Platform', value: getMostCommon(ads.map((ad) => ad.platform)).join(' · ') || 'No ads yet' },
-    { label: 'Most Common Angle', value: getMostCommon(ads.map((ad) => ad.angle)).join(' · ') || 'No ads yet' },
+    { label: 'Most Common Angle', value: getMostCommon(ads.map((ad) => ad.angle)).join(' · ') || 'Not categorized' },
   ]
 
   return (
@@ -52,7 +52,7 @@ function Competitors() {
             </div>
           ))}
         </dl>
-        <p className="mt-3 text-xs leading-5 text-slate-500">Based on the local sample ads. All tied platforms or angles are shown.</p>
+        <p className="mt-3 text-xs leading-5 text-slate-500">Based on the local ad library. All tied platforms or angles are shown.</p>
       </section>
 
       <section aria-labelledby="tracked-heading">
@@ -61,7 +61,7 @@ function Competitors() {
           {competitorSummaries.map((competitor) => <CompetitorCard key={competitor.name} competitor={competitor} />)}
         </div>
         {competitorSummaries.length === 0 && (
-          <p className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">No competitors to show yet. Competitors will appear when sample ads are added.</p>
+          <p className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">No competitors to show yet. Competitors will appear when ads are added.</p>
         )}
       </section>
     </div>

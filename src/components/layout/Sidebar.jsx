@@ -1,4 +1,4 @@
-import { FolderHeart, LayoutDashboard, ScanSearch, Users } from 'lucide-react'
+import { FolderHeart, LayoutDashboard, ScanSearch, Users, FilePlus } from 'lucide-react'
 import { Link, NavLink } from 'react-router-dom'
 
 const navigation = [
@@ -6,6 +6,7 @@ const navigation = [
   { to: '/ads', label: 'Ads Explorer', icon: ScanSearch },
   { to: '/competitors', label: 'Competitors', icon: Users },
   { to: '/collections', label: 'Collections', icon: FolderHeart },
+  { to: '/import', label: 'Import Ad', icon: FilePlus },
 ]
 
 function Sidebar() {

@@ -3,7 +3,8 @@ import AdCard from '../components/dashboard/AdCard'
 import CompetitorItem from '../components/dashboard/CompetitorItem'
 import StatCard from '../components/dashboard/StatCard'
 import TrendItem from '../components/dashboard/TrendItem'
-import { ads, competitors, dashboardStats, trendingAngles } from '../data/mockAds'
+import { competitors, dashboardStats, trendingAngles } from '../data/mockAds'
+import { ads } from '../data/ads'
 
 function Dashboard() {
   const [recentAds, setRecentAds] = useState(ads.slice(0, 4))

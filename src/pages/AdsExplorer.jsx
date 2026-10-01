@@ -1,22 +1,69 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import AdCard from '../components/dashboard/AdCard'
-import { ads } from '../data/mockAds'
+import { ads as localAds } from '../data/ads'
+import { supabase } from '../lib/supabase'
 
 function AdsExplorer() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const [runtimeAds, setRuntimeAds] = useState(localAds)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Ignore a response if this page unmounts before the request finishes.
+    let cancelled = false
+
+    async function loadAds() {
+      try {
+        const { data, error } = await supabase
+          .from('ads')
+          .select('*')
+
+        if (cancelled) return
+        if (error) throw error
+        if (!Array.isArray(data)) throw new Error('No ads data returned')
+
+        // Translate database column names into the shape used by AdCard.
+        const mappedAds = data.map((ad) => ({
+          id: ad.id,
+          competitor: ad.competitor ?? '',
+          platform: ad.platform ?? '',
+          headline: ad.headline ?? '',
+          copy: ad.copy ?? '',
+          image: ad.image_url ?? '',
+          angle: ad.angle ?? null,
+          date: ad.started_at ?? '',
+          sourceUrl: ad.source_url ?? '',
+          sourceId: ad.source_id ?? '',
+          saved: false,
+          isReal: ad.is_real === true,
+        }))
+
+        // An empty successful result should show the existing empty state.
+        setRuntimeAds(mappedAds)
+      } catch {
+        if (!cancelled) {
+          console.error('Unable to load Supabase ads. Using local ads instead.')
+        }
+      } finally {
+        if (!cancelled) setIsLoading(false)
+      }
+    }
+
+    loadAds()
+    return () => { cancelled = true }
+  }, [])
   const competitorFilter = searchParams.get('competitor') || ''
-  const [explorerAds, setExplorerAds] = useState(ads)
   const [searchQuery, setSearchQuery] = useState('')
   const [platformFilter, setPlatformFilter] = useState('All')
   const [angleFilter, setAngleFilter] = useState('All')
   const [savedFilter, setSavedFilter] = useState('All')
 
   const query = searchQuery.trim().toLowerCase()
-  const filteredAds = explorerAds.filter((ad) => {
+  const filteredAds = runtimeAds.filter((ad) => {
     const matchesSearch = [ad.competitor, ad.headline, ad.copy, ad.angle]
-      .some((text) => text.toLowerCase().includes(query))
+      .some((text) => (text || '').toLowerCase().includes(query))
     const matchesPlatform = platformFilter === 'All' || ad.platform === platformFilter
     const matchesAngle = angleFilter === 'All' || ad.angle === angleFilter
     const matchesSaved = savedFilter === 'All' || ad.saved
@@ -38,7 +85,7 @@ function AdsExplorer() {
   }
 
   function toggleSave(id) {
-    setExplorerAds((currentAds) => currentAds.map((ad) => (
+    setRuntimeAds((currentAds) => currentAds.map((ad) => (
       ad.id === id ? { ...ad, saved: !ad.saved } : ad
     )))
   }
@@ -100,7 +147,7 @@ function AdsExplorer() {
       <section aria-labelledby="results-heading">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h2 id="results-heading" aria-live="polite" aria-atomic="true" className="text-sm font-medium text-slate-600">
-            {filteredAds.length} {filteredAds.length === 1 ? 'ad' : 'ads'} found
+            {isLoading ? 'Loading ads...' : `${filteredAds.length} ${filteredAds.length === 1 ? 'ad' : 'ads'} found`}
           </h2>
           {hasActiveFilters && (
             <button type="button" onClick={clearFilters} className="rounded-lg px-3 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-50 focus-visible:outline-2 focus-visible:outline-indigo-600">
@@ -108,7 +155,7 @@ function AdsExplorer() {
             </button>
           )}
         </div>
-        {filteredAds.length > 0 ? (
+        {!isLoading && (filteredAds.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
             {filteredAds.map((ad) => <AdCard key={ad.id} ad={ad} onToggleSave={toggleSave} />)}
           </div>
@@ -121,8 +168,8 @@ function AdsExplorer() {
               Clear filters
             </button>
           </div>
-        )}
-        <p className="mt-4 text-xs text-slate-500">Sample creatives. Saves are local to this page and reset when you leave.</p>
+        ))}
+        <p className="mt-4 text-xs text-slate-500">Saves are local to this page and reset when you leave.</p>
       </section>
     </div>
   )

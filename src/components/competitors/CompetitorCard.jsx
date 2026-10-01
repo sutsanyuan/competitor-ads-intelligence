@@ -9,7 +9,7 @@ function CompetitorCard({ competitor }) {
         <div aria-hidden="true" className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-sm font-semibold text-slate-600">{initials}</div>
         <div>
           <h3 className="font-semibold">{competitor.name}</h3>
-          <p className="mt-1 text-sm text-slate-500">{competitor.adCount} {competitor.adCount === 1 ? 'ad' : 'ads'} in the sample library</p>
+          <p className="mt-1 text-sm text-slate-500">{competitor.adCount} {competitor.adCount === 1 ? 'ad' : 'ads'} in the local library</p>
         </div>
       </div>
       <dl className="my-5 space-y-4 text-sm">
@@ -25,7 +25,7 @@ function CompetitorCard({ competitor }) {
         </div>
         <div>
           <dt className="text-xs font-medium text-slate-500">Top angle{competitor.topAngles.length > 1 ? 's (tied)' : ''}</dt>
-          <dd className="mt-1 leading-6">{competitor.topAngles.join(' · ')}</dd>
+          <dd className="mt-1 leading-6">{competitor.topAngles.join(' · ') || 'Not categorized'}</dd>
         </div>
       </dl>
       <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
