@@ -15,7 +15,7 @@ button.addEventListener("click", async () => {
         });
         textarea.value = injection.result || "請先在網頁上反白要抓取的文字";
     } catch (error) {
-        console.error(error);
+        console.warn(error);
         textarea.value = "此頁面無法抓取（例如 chrome:// 頁面）";
     }
 });
