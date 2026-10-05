@@ -1,3 +1,34 @@
+import { SUPABASE_URL, SUPABASE_KEY } from "./config.js";
+
+async function signIn(email, password) {
+    const response = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_KEY,
+        },
+        body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error_description || "登入失敗");
+    return data;
+}
+
+document.getElementById("login-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const status = document.getElementById("login-status");
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try {
+        const session = await signIn(email, password);
+        await chrome.storage.local.set({ session });
+        status.textContent = `已登入：${session.user.email}`;
+    } catch (error) {
+        status.textContent = error.message;
+    }
+});
+
 const button = document.getElementById("btn-collect");
 
 function getSelectedText() {

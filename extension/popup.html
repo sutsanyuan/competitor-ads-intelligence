@@ -10,11 +10,17 @@
     </head>
     <body>
         <main>
+            <form id="login-form">
+                <input type="email" id="email" placeholder="Email" required />
+                <input type="password" id="password" placeholder="密碼" required />
+                <button type="submit">登入</button>
+                <p id="login-status"></p>
+            </form>
             <h1>Collect Ads</h1>
             <p id="ad-id">讀取中…</p>
             <button id="btn-collect">抓取選取文字</button>
             <textarea id="ad-copy" rows="6"></textarea>
         </main>
-        <script src="popup.js"></script>
+        <script type="module" src="popup.js"></script>
     </body>
 </html>
