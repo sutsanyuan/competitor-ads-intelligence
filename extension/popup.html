@@ -21,9 +21,16 @@
                 <button id="btn-logout" type="button">登出</button>
 
                 <h1>Collect Ads</h1>
-                <p id="ad-id">讀取中…</p>
-                <button id="btn-collect">抓取選取文字</button>
-                <textarea id="ad-copy" rows="6"></textarea>
+                <form id="ad-form">
+                    <label>廣告編號 <input id="ad-id" required /></label>
+                    <label>品牌 <input id="competitor" required /></label>
+                    <label>標題 <input id="headline" required /></label>
+                    <button type="button" id="btn-collect">抓取選取文字</button>
+                    <label>文案 <textarea id="ad-copy" rows="6" required></textarea></label>
+                    <label>開始日期 <input type="date" id="started-at" required /></label>
+                    <button type="submit">儲存廣告</button>
+                    <p id="save-status"></p>
+                </form>
             </section>
         </main>
         <script type="module" src="popup.js"></script>
