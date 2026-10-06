@@ -31,8 +31,27 @@ document.getElementById("login-form").addEventListener("submit", async (event) =
 
 const button = document.getElementById("btn-collect");
 
-function getSelectedText() {
-    return window.getSelection().toString();
+// 這個函式在 Facebook 頁面裡執行
+function getSelectionInfo() {
+    const selection = window.getSelection();
+    const text = selection.toString();
+    if (!text) return { text: "", adId: null };
+
+    // 正規表示式：找「資料庫編號：」或「Library ID:」後面的一串數字
+    const idPattern = /(?:資料庫編號|Library ID)[:：]\s*(\d+)/;
+
+    // anchorNode 是反白起點所在的節點（通常是文字節點），先拿到它的父元素
+    let element = selection.anchorNode.parentElement;
+
+    while (element) {
+        const match = element.innerText.match(idPattern);
+        if (match) {
+            return { text, adId: match[1] }; // 提示：括號 ( ) 抓到的部分在第幾個？
+        }
+        element = element.parentElement; // 往上一層
+    }
+
+    return { text, adId: null }; // 一路找到頂都沒有
 }
 
 button.addEventListener("click", async () => {
@@ -42,9 +61,11 @@ button.addEventListener("click", async () => {
     try {
         const [injection] = await chrome.scripting.executeScript({
             target: { tabId: tab.id },
-            func: getSelectedText,
+            func: getSelectionInfo,
         });
-        textarea.value = injection.result || "請先在網頁上反白要抓取的文字";
+        const { text, adId } = injection.result;
+        textarea.value = text || "請先在網頁上反白要抓取的文字";
+        if (adId) document.getElementById("ad-id").textContent = adId;
     } catch (error) {
         console.warn(error);
         textarea.value = "此頁面無法抓取（例如 chrome:// 頁面）";
