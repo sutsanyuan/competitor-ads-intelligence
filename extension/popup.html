@@ -16,10 +16,15 @@
                 <button type="submit">登入</button>
                 <p id="login-status"></p>
             </form>
-            <h1>Collect Ads</h1>
-            <p id="ad-id">讀取中…</p>
-            <button id="btn-collect">抓取選取文字</button>
-            <textarea id="ad-copy" rows="6"></textarea>
+            <section id="app-panel" hidden>
+                <p>已登入：<span id="user-email"></span></p>
+                <button id="btn-logout" type="button">登出</button>
+
+                <h1>Collect Ads</h1>
+                <p id="ad-id">讀取中…</p>
+                <button id="btn-collect">抓取選取文字</button>
+                <textarea id="ad-copy" rows="6"></textarea>
+            </section>
         </main>
         <script type="module" src="popup.js"></script>
     </body>

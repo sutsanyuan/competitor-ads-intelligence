@@ -23,7 +23,7 @@ document.getElementById("login-form").addEventListener("submit", async (event) =
     try {
         const session = await signIn(email, password);
         await chrome.storage.local.set({ session });
-        status.textContent = `已登入：${session.user.email}`;
+        render(session);
     } catch (error) {
         status.textContent = error.message;
     }
@@ -66,6 +66,8 @@ function parseAdId(urlString) {
 }
 
 async function init() {
+    const { session } = await chrome.storage.local.get("session");
+    render(session);
     const output = document.getElementById("ad-id");
     const tab = await getCurrentTab();
     if (!tab?.url) {
@@ -77,3 +79,23 @@ async function init() {
 }
 
 init();
+
+function render(session) {
+    const loginForm = document.getElementById("login-form");
+    const appPanel = document.getElementById("app-panel");
+
+    if (session) {
+        loginForm.hidden = true;
+        appPanel.hidden = false;
+        document.getElementById("user-email").textContent = session.user.email;
+    } else {
+        loginForm.hidden = false;
+        appPanel.hidden = true;
+    }
+}
+
+const btnLogOut = document.getElementById("btn-logout");
+btnLogOut.addEventListener("click", async () => {
+    await chrome.storage.local.remove("session");
+    render(null);
+});
