@@ -56,6 +56,8 @@ function getSelectionInfo() {
 
 button.addEventListener("click", async () => {
     const textarea = document.getElementById("ad-copy");
+    const status = document.getElementById("save-status");
+    status.textContent = "";
     const tab = await getCurrentTab();
 
     try {
@@ -64,11 +66,16 @@ button.addEventListener("click", async () => {
             func: getSelectionInfo,
         });
         const { text, adId } = injection.result;
-        textarea.value = text || "請先在網頁上反白要抓取的文字";
-        if (adId) document.getElementById("ad-id").textContent = adId;
+        if (text) {
+            textarea.value = text;
+        } else {
+            status.textContent = "請先在網頁上反白要抓取的文字";
+        }
+
+        if (adId) document.getElementById("ad-id").value = adId;
     } catch (error) {
         console.warn(error);
-        textarea.value = "此頁面無法抓取（例如 chrome:// 頁面）";
+        status.textContent = "此頁面無法抓取（例如 chrome:// 頁面）";
     }
 });
 
@@ -91,12 +98,10 @@ async function init() {
     render(session);
     const output = document.getElementById("ad-id");
     const tab = await getCurrentTab();
-    if (!tab?.url) {
-        output.textContent = "無法讀取此頁面";
-        return;
-    }
+    if (!tab?.url) return;
+
     const adId = parseAdId(tab.url);
-    output.textContent = adId ?? "這不是單則廣告頁面";
+    output.value = adId ?? "";
 }
 
 init();
