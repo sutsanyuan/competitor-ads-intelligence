@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="popup.css" />
+    </head>
+    <body>
+        <main>
+            <form id="login-form">
+                <h1>Ad Intel Clipper</h1>
+                <label>
+                    Email
+                    <input type="email" id="email" autocomplete="email" required />
+                </label>
+                <label>
+                    密碼
+                    <input type="password" id="password" autocomplete="current-password" required />
+                </label>
+                <button type="submit">登入</button>
+                <p id="login-status" class="status" role="status"></p>
+            </form>
+
+            <section id="app-panel" hidden>
+                <header class="header">
+                    <h1>Collect Ads</h1>
+                    <div class="user">
+                        <span id="user-email"></span>
+                        <button id="btn-logout" type="button" class="secondary">登出</button>
+                    </div>
+                </header>
+
+                <form id="ad-form">
+                    <label>
+                        廣告編號
+                        <input id="ad-id" placeholder="反白廣告文案後按抓取，或手動輸入" required />
+                    </label>
+                    <label>
+                        品牌
+                        <input id="competitor" required />
+                    </label>
+                    <label>
+                        標題
+                        <input id="headline" required />
+                    </label>
+                    <div class="field">
+                        <div class="label-row">
+                            <label for="ad-copy">文案</label>
+                            <button type="button" id="btn-collect" class="secondary">
+                                抓取選取文字
+                            </button>
+                        </div>
+                        <img id="ad-preview" alt="廣告截圖預覽" hidden />
+                        <textarea id="ad-copy" rows="6" required></textarea>
+                    </div>
+                    <label>
+                        開始日期
+                        <input type="date" id="started-at" required />
+                    </label>
+                    <button type="submit">儲存廣告</button>
+                    <p id="save-status" class="status" role="status"></p>
+                </form>
+            </section>
+        </main>
+        <script type="module" src="popup.js"></script>
+    </body>
+</html>

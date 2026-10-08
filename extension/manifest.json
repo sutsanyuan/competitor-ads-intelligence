@@ -1,0 +1,10 @@
+{
+    "manifest_version": 3,
+    "name": "Ad Intel Clipper",
+    "version": "0.1.0",
+    "description": "Save competitor ads from Meta Ad Library",
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "permissions": ["activeTab","scripting", "storage"]
+  }

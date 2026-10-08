@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+extension/config.js
+# Raw screen recordings (commit the compressed mp4 only)
+docs/*.mov
