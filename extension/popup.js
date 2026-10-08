@@ -50,12 +50,11 @@ async function saveAd(session, ad) {
             "Content-Type": "application/json",
             apikey: SUPABASE_KEY,
             Authorization: `Bearer ${session.access_token}`,
-            Prefer: "return=minimal",
+            Prefer: "resolution=merge-duplicates,return=minimal",
         },
         body: JSON.stringify(ad),
     });
 
-    if (response.status === 409) throw new Error("這則廣告已經存過了");
     if (response.status === 401) throw new Error("登入已過期，請重新登入");
     if (!response.ok) throw new Error(`儲存失敗（${response.status}）`);
 }
@@ -98,8 +97,6 @@ document.getElementById("ad-form").addEventListener("submit", async (event) => {
         started_at: startedAt,
         source_id: sourceId,
         source_url: `https://www.facebook.com/ads/library/?id=${sourceId}`,
-        image_url: null,
-        angle: null,
         is_real: true,
     };
 
