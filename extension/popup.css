@@ -145,3 +145,9 @@ button.secondary:hover {
 .status:empty {
     display: none;
 }
+
+#ad-preview {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}

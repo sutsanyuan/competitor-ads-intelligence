@@ -1,5 +1,7 @@
 import { SUPABASE_URL, SUPABASE_KEY } from "./config.js";
 
+let capturedImage = null;
+
 async function signIn(email, password) {
     const response = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
         method: "post",
@@ -100,7 +102,13 @@ function getSelectionInfo() {
     while (element) {
         const match = element.innerText.match(idPattern);
         if (match) {
-            return { text, adId: match[1] }; // 提示：括號 ( ) 抓到的部分在第幾個？
+            const rect = element.getBoundingClientRect();
+            return {
+                text,
+                adId: match[1],
+                rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+                dpr: window.devicePixelRatio,
+            }; // 提示：括號 ( ) 抓到的部分在第幾個？
         }
         element = element.parentElement; // 往上一層
     }
@@ -119,7 +127,15 @@ button.addEventListener("click", async () => {
             target: { tabId: tab.id },
             func: getSelectionInfo,
         });
-        const { text, adId } = injection.result;
+        const { text, adId, rect, dpr } = injection.result;
+
+        if (rect) {
+            capturedImage = await captureCard(rect, dpr);
+            console.log(capturedImage.type, capturedImage.size);
+            const preview = document.getElementById("ad-preview");
+            preview.src = URL.createObjectURL(capturedImage);
+            preview.hidden = false;
+        }
 
         if (text) {
             textarea.value = text;
@@ -191,3 +207,26 @@ btnLogOut.addEventListener("click", async () => {
     await chrome.storage.local.remove("session");
     render(null);
 });
+
+async function captureCard(rect, dpr) {
+    // 1. 截圖
+    const dataUrl = await chrome.tabs.captureVisibleTab({ format: "png" });
+    const blob = await (await fetch(dataUrl)).blob();
+    const shot = await createImageBitmap(blob);
+
+    // 2. 把 CSS 像素換算成截圖的實體像素，並夾在截圖範圍內
+    const sx = Math.max(0, Math.round(rect.x * dpr));
+    const sy = Math.max(0, Math.round(rect.y * dpr));
+    const sw = Math.min(shot.width - sx, Math.round(rect.width * dpr));
+    const sh = Math.min(shot.height - sy, Math.round(rect.height * dpr));
+
+    // 3. 計算縮放：寬度最多 800px，比較小的圖不放大
+    const scale = Math.min(1, 800 / sw);
+    const canvas = new OffscreenCanvas(Math.round(sw * scale), Math.round(sh * scale));
+
+    // 4. 裁切並縮放
+    canvas.getContext("2d").drawImage(shot, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+
+    // 5. 壓縮成 WebP
+    return canvas.convertToBlob({ type: "image/webp", quality: 0.8 });
+}
