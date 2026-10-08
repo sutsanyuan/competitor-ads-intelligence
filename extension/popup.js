@@ -15,6 +15,33 @@ async function signIn(email, password) {
     if (!response.ok) throw new Error(data.error_description || "登入失敗");
     return data;
 }
+async function refreshSession(refreshToken) {
+    const response = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_KEY,
+        },
+        body: JSON.stringify({ refresh_token: refreshToken }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error("登入已過期，請重新登入");
+    return data; // 新的 session，格式跟登入時拿到的一樣
+}
+async function getValidSession() {
+    const { session } = await chrome.storage.local.get("session");
+    if (!session) throw new Error("請先登入");
+
+    // expires_at 的單位是「秒」，Date.now() 的單位是「毫秒」
+    const expiresAtMs = session.expires_at * 1000;
+    const isExpiringSoon = expiresAtMs - Date.now() < 60 * 1000; // 剩不到 60 秒
+
+    if (!isExpiringSoon) return session;
+
+    const newSession = await refreshSession(session.refresh_token);
+    await chrome.storage.local.set({ session: newSession });
+    return newSession;
+}
 
 async function saveAd(session, ad) {
     const response = await fetch(`${SUPABASE_URL}/rest/v1/ads`, {
@@ -55,8 +82,6 @@ document.getElementById("ad-form").addEventListener("submit", async (event) => {
     const status = document.getElementById("save-status");
     status.textContent = "儲存中…";
 
-    const { session } = await chrome.storage.local.get("session");
-
     const field = (id) => document.getElementById(id).value.trim();
     const sourceId = field("ad-id");
     const competitor = field("competitor");
@@ -79,6 +104,7 @@ document.getElementById("ad-form").addEventListener("submit", async (event) => {
     };
 
     try {
+        const session = await getValidSession();
         if (capturedImage) {
             status.textContent = "上傳圖片中…";
             ad.image_url = await uploadImage(session, `meta/${sourceId}.webp`, capturedImage);
