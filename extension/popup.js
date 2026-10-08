@@ -14,6 +14,61 @@ async function signIn(email, password) {
     return data;
 }
 
+async function saveAd(session, ad) {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/ads`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_KEY,
+            Authorization: `Bearer ${session.access_token}`,
+            Prefer: "return=minimal",
+        },
+        body: JSON.stringify(ad),
+    });
+
+    if (response.status === 409) throw new Error("這則廣告已經存過了");
+    if (response.status === 401) throw new Error("登入已過期，請重新登入");
+    if (!response.ok) throw new Error(`儲存失敗（${response.status}）`);
+}
+
+document.getElementById("ad-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const status = document.getElementById("save-status");
+    status.textContent = "儲存中…";
+
+    const { session } = await chrome.storage.local.get("session");
+
+    const field = (id) => document.getElementById(id).value.trim();
+    const sourceId = field("ad-id");
+    const competitor = field("competitor");
+    const headline = field("headline");
+    const copy = field("ad-copy");
+    const startedAt = field("started-at");
+
+    const ad = {
+        id: `meta-${sourceId}`,
+        competitor,
+        platform: "Meta",
+        headline,
+        copy,
+        started_at: startedAt,
+        source_id: sourceId,
+        source_url: `https://www.facebook.com/ads/library/?id=${sourceId}`,
+        image_url: null,
+        angle: null,
+        is_real: true,
+    };
+
+    try {
+        await saveAd(session, ad);
+        status.textContent = "已儲存 ✅";
+    } catch (error) {
+        status.textContent = error.message;
+    }
+
+    //    失敗：status 顯示 error.message
+});
+
 document.getElementById("login-form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const status = document.getElementById("login-status");
