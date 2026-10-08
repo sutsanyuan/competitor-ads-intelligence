@@ -4,9 +4,9 @@ A competitor ad research tool: a **Chrome extension** that clips ads from the Me
 
 **Live demo:** https://competitor-ads-intelligence-theta.vercel.app
 
-[![Demo: clipping an ad from Meta Ad Library and seeing it in the dashboard](docs/preview.jpg)](docs/demo.mp4)
+Select ad copy on Meta Ad Library → the extension fills in the ad ID, brand, headline, copy and a screenshot → save → the ad appears in the dashboard.
 
-▶ [Watch the 48-second demo](docs/demo.mp4): select ad copy on Meta Ad Library → the extension fills in the ad ID, brand, headline, copy and a screenshot → save → the ad appears in the dashboard.
+https://github.com/user-attachments/assets/faeee5d2-2e81-475f-852a-16934c026897
 
 ## Why this exists
 
