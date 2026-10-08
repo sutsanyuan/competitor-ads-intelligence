@@ -61,12 +61,11 @@ document.getElementById("ad-form").addEventListener("submit", async (event) => {
 
     try {
         await saveAd(session, ad);
+        await chrome.storage.local.set({ lastCompetitor: competitor });
         status.textContent = "已儲存 ✅";
     } catch (error) {
         status.textContent = error.message;
     }
-
-    //    失敗：status 顯示 error.message
 });
 
 document.getElementById("login-form").addEventListener("submit", async (event) => {
@@ -121,8 +120,15 @@ button.addEventListener("click", async () => {
             func: getSelectionInfo,
         });
         const { text, adId } = injection.result;
+
         if (text) {
             textarea.value = text;
+
+            const headlineInput = document.getElementById("headline");
+            if (!headlineInput.value) {
+                const firstLine = text.split("\n")[0].trim();
+                headlineInput.value = firstLine.slice(0, 80);
+            }
         } else {
             status.textContent = "請先在網頁上反白要抓取的文字";
         }
@@ -149,8 +155,13 @@ function parseAdId(urlString) {
 }
 
 async function init() {
-    const { session } = await chrome.storage.local.get("session");
+    const { session, lastCompetitor } = await chrome.storage.local.get([
+        "session",
+        "lastCompetitor",
+    ]);
     render(session);
+    const competitorInput = document.getElementById("competitor");
+    competitorInput.value = lastCompetitor ?? "";
     const output = document.getElementById("ad-id");
     const tab = await getCurrentTab();
     if (!tab?.url) return;
