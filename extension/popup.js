@@ -33,6 +33,23 @@ async function saveAd(session, ad) {
     if (!response.ok) throw new Error(`儲存失敗（${response.status}）`);
 }
 
+async function uploadImage(session, path, blob) {
+    const response = await fetch(`${SUPABASE_URL}/storage/v1/object/ad-images/${path}`, {
+        method: "POST",
+        headers: {
+            apikey: SUPABASE_KEY,
+            Authorization: `Bearer ${session.access_token}`,
+            "Content-Type": "image/webp",
+            "x-upsert": "true", // 同名檔案存在時覆蓋
+        },
+        body: blob, // 提示：直接把圖片本身當作 body，不用 JSON.stringify
+    });
+    if (!response.ok) throw new Error(`圖片上傳失敗（${response.status}）`);
+
+    // 回傳公開網址（注意路徑多了 /public/）
+    return `${SUPABASE_URL}/storage/v1/object/public/ad-images/${path}`;
+}
+
 document.getElementById("ad-form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const status = document.getElementById("save-status");
@@ -62,6 +79,13 @@ document.getElementById("ad-form").addEventListener("submit", async (event) => {
     };
 
     try {
+        if (capturedImage) {
+            status.textContent = "上傳圖片中…";
+            ad.image_url = await uploadImage(session, `meta/${sourceId}.webp`, capturedImage);
+        }
+
+        status.textContent = "儲存中…";
+
         await saveAd(session, ad);
         await chrome.storage.local.set({ lastCompetitor: competitor });
         status.textContent = "已儲存 ✅";
@@ -131,7 +155,7 @@ button.addEventListener("click", async () => {
 
         if (rect) {
             capturedImage = await captureCard(rect, dpr);
-            console.log(capturedImage.type, capturedImage.size);
+
             const preview = document.getElementById("ad-preview");
             preview.src = URL.createObjectURL(capturedImage);
             preview.hidden = false;
